@@ -1,0 +1,260 @@
+.rwl-wheel-wrapper {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: Tahoma, sans-serif;
+    direction: rtl;
+    background: #fdfdfd;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.rwl-step-container {
+    padding: 20px;
+}
+
+.rwl-input-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.rwl-input-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.rwl-btn {
+    padding: 10px 20px;
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.rwl-btn-primary {
+    background: #28a745;
+}
+
+.rwl-wheel-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 20px;
+}
+
+.rwl-wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid #333;
+    position: relative;
+    overflow: hidden;
+    transition: transform 10s cubic-bezier(0.1, 0, 0.1, 1);
+}
+
+.rwl-arrow {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; 
+    height: 0; 
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #333;
+    z-index: 10;
+}
+
+.rwl-spin-btn {
+    padding: 15px 40px;
+    font-size: 18px;
+    background: #ffc107;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Result Popup */
+.rwl-popup-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rwl-popup-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    min-width: 300px;
+}
+
+/* Toast Notifications */
+.rwl-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.rwl-toast {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    max-width: 400px;
+    direction: rtl;
+    font-family: Tahoma, sans-serif;
+    font-size: 14px;
+    animation: rwlSlideIn 0.3s ease-out forwards;
+    pointer-events: auto;
+    border-right: 5px solid #ccc;
+}
+
+.rwl-toast.rwl-toast-success {
+    border-right-color: #28a745;
+}
+
+.rwl-toast.rwl-toast-error {
+    border-right-color: #dc3545;
+}
+
+.rwl-toast-icon {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rwl-toast-success .rwl-toast-icon {
+    color: #28a745;
+}
+
+.rwl-toast-error .rwl-toast-icon {
+    color: #dc3545;
+}
+
+.rwl-toast-message {
+    flex-grow: 1;
+    color: #333;
+}
+
+.rwl-toast-close {
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.rwl-toast-close:hover {
+    color: #333;
+}
+
+.rwl-toast.rwl-fade-out {
+    animation: rwlFadeOut 0.3s ease-in forwards;
+}
+
+@keyframes rwlSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes rwlFadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+.rwl-close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.rwl-code-box {
+    background: #eee;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px dashed #999;
+}
+
+.rwl-code-box code {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Floating Bar */
+.rwl-floating-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #333;
+    color: #fff;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+
+.rwl-bar-content {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.rwl-close-bar {
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.rwl-btn-small {
+    padding: 5px 10px;
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}

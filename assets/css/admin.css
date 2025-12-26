@@ -1,0 +1,33 @@
+.rwl-wrap .rwl-card {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.rwl-item-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+.rwl-item-row input[type="text"] {
+    flex: 1;
+}
+
+.rwl-item-row input[type="number"] {
+    width: 80px;
+}
+
+#rwl-total-chance {
+    font-weight: bold;
+    color: green;
+}
+#rwl-total-chance.error {
+    color: red;
+}
