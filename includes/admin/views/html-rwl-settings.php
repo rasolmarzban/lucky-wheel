@@ -7,6 +7,15 @@
             <h2>تنظیمات عمومی</h2>
             <table class="form-table">
                 <tr valign="top">
+                    <th scope="row">حالت تست (Test Mode)</th>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="rwl_settings[test_mode]" value="1" <?php checked(1, isset($test_mode) ? $test_mode : 0); ?> />
+                            فعال‌سازی حالت تست (نمایش گردونه بدون دریافت شماره و کد تایید)
+                        </label>
+                    </td>
+                </tr>
+                <tr valign="top">
                     <th scope="row">محدودیت زمانی (ساعت)</th>
                     <td>
                         <input type="number" name="rwl_settings[limit_duration]" value="<?php echo esc_attr($limit_duration); ?>" class="small-text" />
@@ -25,7 +34,7 @@
 
         <div class="rwl-card">
             <h2>آیتم‌های گردونه</h2>
-            <p class="description">مجموع شانس‌ها باید دقیقا ۱۰۰ باشد.</p>
+            <p class="description">مجموع شانس‌ها باید دقیقا ۱۰۰ باشد. <strong>برای تعریف آیتم «پوچ»، فیلد «کد تخفیف» را خالی بگذارید.</strong></p>
             <div id="rwl-items-wrapper">
                 <?php
                 if (! empty($items)) {

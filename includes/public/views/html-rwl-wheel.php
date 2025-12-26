@@ -1,9 +1,9 @@
 <!-- RSD Lucky Wheel Wrapper -->
-<div id="rwl-wheel-wrapper" class="rwl-wheel-wrapper" data-items="<?php echo esc_attr( $items_json ); ?>">
+<div id="rwl-wheel-wrapper" class="rwl-wheel-wrapper" data-items="<?php echo esc_attr($items_json); ?>">
 
     <!-- Toast Notification Container -->
     <div id="rwl-toast-container" class="rwl-toast-container"></div>
-    
+
     <!-- OTP/Login Section -->
     <div id="rwl-step-login" class="rwl-step-container active">
         <h3>گردونه شانس</h3>
@@ -40,10 +40,10 @@
 <div id="rwl-result-popup" class="rwl-popup-overlay" style="display:none;">
     <div class="rwl-popup-content">
         <span class="rwl-close-popup">&times;</span>
-        <h3>تبریک!</h3>
-        <p>شما برنده شدید:</p>
+        <h3 id="rwl-popup-title">تبریک!</h3>
+        <p id="rwl-popup-desc">شما برنده شدید:</p>
         <h2 id="rwl-won-item-title"></h2>
-        <div class="rwl-code-box">
+        <div class="rwl-code-box" id="rwl-code-container">
             <span id="rwl-won-code"></span>
             <button id="rwl-copy-btn" class="rwl-btn-small">کپی</button>
         </div>

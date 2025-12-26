@@ -24,9 +24,14 @@ class RWL_Public
     {
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . '../../assets/js/public.js', array('jquery'), $this->version, false);
 
+        // Get test mode status
+        $options = get_option('rwl_settings');
+        $is_test_mode = isset($options['test_mode']) ? $options['test_mode'] : 0;
+
         wp_localize_script($this->plugin_name, 'rwl_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('rwl_nonce'),
+            'is_test_mode' => $is_test_mode
         ));
     }
 
@@ -48,6 +53,34 @@ class RWL_Public
         ob_start();
         include plugin_dir_path(__FILE__) . 'views/html-rwl-wheel.php';
         return ob_get_clean();
+    }
+
+    // AJAX: Test Spin (No Auth, No Log)
+    public function ajax_test_spin()
+    {
+        // For test mode, we might skip nonce if we really want it open, 
+        // but it's safer to keep nonce. The JS sends it anyway.
+        check_ajax_referer('rwl_nonce', 'nonce');
+
+        // Check if test mode is actually enabled
+        $options = get_option('rwl_settings');
+        if (empty($options['test_mode'])) {
+            wp_send_json_error(array('message' => 'حالت تست غیرفعال است.'));
+        }
+
+        // Calculate Result
+        $result = $this->calculate_spin_result();
+
+        // Determine Win/Loss for message
+        $is_win = !empty($result['item']['code']);
+        $message = $is_win ? 'تبریک! شما برنده شدید (تست).' : 'متاسفیم، شما برنده نشدید (تست).';
+
+        wp_send_json_success(array(
+            'result_index' => $result['index'],
+            'item' => $result['item'],
+            'is_win' => $is_win,
+            'message' => $message
+        ));
     }
 
     // AJAX: Send OTP
@@ -122,14 +155,15 @@ class RWL_Public
         // Log Result
         $this->log_spin($mobile, $result);
 
-        // Set cookie for floating bar (valid for 24 hours or custom)
-        // We will return the data and let JS handle the UI, but maybe set a cookie for persistence?
-        // Let's rely on JS localStorage for the floating bar persistence to keep it simple and fast.
+        // Determine Win/Loss for message
+        $is_win = !empty($result['item']['code']);
+        $message = $is_win ? 'تبریک! شما برنده شدید.' : 'متاسفیم، شما برنده نشدید.';
 
         wp_send_json_success(array(
             'result_index' => $result['index'],
             'item' => $result['item'],
-            'message' => 'تبریک! شما برنده شدید.'
+            'is_win' => $is_win,
+            'message' => $message
         ));
     }
 

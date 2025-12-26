@@ -142,6 +142,7 @@ class RWL_Admin
 		// Defaults
 		$limit_duration = isset($options['limit_duration']) ? $options['limit_duration'] : 24;
 		$global_win_chance = isset($options['global_win_chance']) ? $options['global_win_chance'] : 70;
+		$test_mode = isset($options['test_mode']) ? $options['test_mode'] : 0;
 		$items = isset($options['items']) ? $options['items'] : array();
 
 		require_once plugin_dir_path(__FILE__) . 'views/html-rwl-settings.php';

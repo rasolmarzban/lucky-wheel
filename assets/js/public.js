@@ -111,6 +111,36 @@ jQuery(document).ready(function ($) {
 
   renderWheel();
 
+  // Test Mode Logic
+  if (rwl_obj.is_test_mode == "1") {
+    $("#rwl-step-login").hide();
+    $("#rwl-step-wheel").fadeIn();
+
+    // Override spin button for test mode
+    $("#rwl-spin-btn")
+      .off("click")
+      .on("click", function () {
+        var $btn = $(this);
+        $btn.prop("disabled", true).text("در حال چرخش...");
+
+        $.post(
+          rwl_obj.ajax_url,
+          {
+            action: "rwl_test_spin",
+            nonce: rwl_obj.nonce,
+          },
+          function (response) {
+            if (response.success) {
+              spinWheel(response.data.result_index, response.data.item, response);
+            } else {
+              $btn.prop("disabled", false).text("چرخش");
+              showNotification(response.data.message, "error");
+            }
+          }
+        );
+      });
+  }
+
   // 2. OTP Logic
   $("#rwl-send-otp-btn").on("click", function () {
     var mobile = $("#rwl-mobile-input").val();
@@ -172,7 +202,7 @@ jQuery(document).ready(function ($) {
           $("#rwl-step-wheel").fadeIn();
 
           // Start Spin
-          spinWheel(response.data.result_index, response.data.item);
+          spinWheel(response.data.result_index, response.data.item, response);
         } else {
           $btn.prop("disabled", false).text("تایید و شروع");
           showNotification(response.data.message, "error");
@@ -181,7 +211,7 @@ jQuery(document).ready(function ($) {
     );
   });
 
-  function spinWheel(winningIndex, item) {
+  function spinWheel(winningIndex, item, response) {
     // Calculate rotation
     // We want the winning slice to be at the TOP (Arrow).
     // Arrow is at 0deg (top).
@@ -200,24 +230,33 @@ jQuery(document).ready(function ($) {
 
     // Wait for animation
     setTimeout(function () {
-      showResult(item);
-    }, 11000); // 10s (CSS) + 1s delay
+      showResult(item, response.data.is_win);
+    }, 13000); // 12s (CSS) + 1s delay
   }
 
-  function showResult(item) {
+  function showResult(item, is_win) {
     $("#rwl-won-item-title").text(item.title);
-    $("#rwl-won-code").text(item.code);
-    $("#rwl-result-popup").fadeIn();
 
-    // Save to LocalStorage for floating bar
-    if (item.code) {
+    if (is_win) {
+      $("#rwl-popup-title").text("تبریک!");
+      $("#rwl-popup-desc").text("شما برنده شدید:");
+      $("#rwl-won-code").text(item.code);
+      $("#rwl-code-container").show();
+
+      // Save to LocalStorage for floating bar
       var data = {
         code: item.code,
         expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // 24 hours
       };
       localStorage.setItem("rwl_won_data", JSON.stringify(data));
       checkFloatingBar();
+    } else {
+      $("#rwl-popup-title").text("متاسفیم!");
+      $("#rwl-popup-desc").text("شانس خود را دوباره امتحان کنید:");
+      $("#rwl-code-container").hide();
     }
+
+    $("#rwl-result-popup").fadeIn();
   }
 
   // Popup interactions

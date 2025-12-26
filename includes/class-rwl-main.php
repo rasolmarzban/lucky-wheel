@@ -89,6 +89,9 @@ class RWL_Main {
         
         $this->loader->add_action( 'wp_ajax_rwl_verify_spin', $plugin_public, 'ajax_verify_spin' );
         $this->loader->add_action( 'wp_ajax_nopriv_rwl_verify_spin', $plugin_public, 'ajax_verify_spin' );
+        
+        $this->loader->add_action( 'wp_ajax_rwl_test_spin', $plugin_public, 'ajax_test_spin' );
+        $this->loader->add_action( 'wp_ajax_nopriv_rwl_test_spin', $plugin_public, 'ajax_test_spin' );
 	}
 
 	/**

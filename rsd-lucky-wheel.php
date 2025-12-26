@@ -2,13 +2,12 @@
 
 /**
  * Plugin Name:       RSD Lucky Wheel
- * Plugin URI:        https://example.com/rsd-lucky-wheel
+ * Plugin URI:        https://github.com/rasolmarzban/lucky-wheel
  * Description:       یک پلاگین پیشرفته گردونه شانس با قابلیت احراز هویت پیامکی و گزارش‌گیری دقیق.
  * Version:           1.0.0
  * Author:            rasolmarzban
- * Author URI:        https://example.com/
+ * Author URI:        https://github.com/rasolmarzban/
  * Text Domain:       rsd-lucky-wheel
- * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
