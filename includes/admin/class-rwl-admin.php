@@ -88,72 +88,131 @@ class RWL_Admin
 		}
 	}
 
-    public function ajax_delete_log()
-    {
-        check_ajax_referer('rwl_admin_nonce', 'nonce');
+	public function ajax_delete_log()
+	{
+		check_ajax_referer('rwl_admin_nonce', 'nonce');
 
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => 'دسترسی غیرمجاز'));
-        }
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array('message' => 'دسترسی غیرمجاز'));
+		}
 
-        $log_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-        if ($log_id <= 0) {
-            wp_send_json_error(array('message' => 'شناسه نامعتبر'));
-        }
+		$log_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+		if ($log_id <= 0) {
+			wp_send_json_error(array('message' => 'شناسه نامعتبر'));
+		}
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'rwl_logs';
-        
-        $deleted = $wpdb->delete($table_name, array('id' => $log_id));
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'rwl_logs';
 
-        if ($deleted) {
-            wp_send_json_success(array('message' => 'رکورد حذف شد.'));
-        } else {
-            wp_send_json_error(array('message' => 'خطا در حذف رکورد.'));
-        }
-    }
+		$deleted = $wpdb->delete($table_name, array('id' => $log_id));
 
-    public function action_export_csv()
-    {
-        if (!current_user_can('manage_options')) {
-            wp_die('دسترسی غیرمجاز');
-        }
+		if ($deleted) {
+			wp_send_json_success(array('message' => 'رکورد حذف شد.'));
+		} else {
+			wp_send_json_error(array('message' => 'خطا در حذف رکورد.'));
+		}
+	}
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'rwl_logs';
-        $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", ARRAY_A);
+	public function action_export_csv()
+	{
+		if (!current_user_can('manage_options')) {
+			wp_die('دسترسی غیرمجاز');
+		}
 
-        if (empty($results)) {
-            wp_die('داده‌ای برای خروجی وجود ندارد.');
-        }
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'rwl_logs';
+		$results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", ARRAY_A);
 
-        $filename = 'rwl-reports-' . date('Y-m-d') . '.csv';
-        
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $filename);
+		if (empty($results)) {
+			wp_die('داده‌ای برای خروجی وجود ندارد.');
+		}
 
-        $output = fopen('php://output', 'w');
+		$filename = 'rwl-reports-' . date('Y-m-d') . '.csv';
 
-        // UTF-8 BOM for Excel
-        fputs($output, "\xEF\xBB\xBF");
+		header('Content-Type: text/csv; charset=utf-8');
+		header('Content-Disposition: attachment; filename=' . $filename);
 
-        // Headers
-        fputcsv($output, array('ID', 'شماره موبایل', 'آیتم برنده شده', 'کد تخفیف', 'آی‌پی کاربر', 'تاریخ و ساعت'));
+		$output = fopen('php://output', 'w');
 
-        foreach ($results as $row) {
-            fputcsv($output, array(
-                $row['id'],
-                $row['mobile'],
-                $row['won_item'],
-                $row['won_code'],
-                $row['user_ip'],
-                $row['created_at']
-            ));
-        }
+		// UTF-8 BOM for Excel
+		fputs($output, "\xEF\xBB\xBF");
 
-        fclose($output);
-        exit;
-    }
+		// Headers
+		fputcsv($output, array('ID', 'شماره موبایل', 'آیتم برنده شده', 'کد تخفیف', 'آی‌پی کاربر', 'تاریخ و ساعت'));
+
+		foreach ($results as $row) {
+			fputcsv($output, array(
+				$row['id'],
+				$row['mobile'],
+				$row['won_item'],
+				$row['won_code'],
+				$row['user_ip'],
+				$row['created_at']
+			));
+		}
+
+		fclose($output);
+		exit;
+	}
+
+	public function ajax_reset_settings()
+	{
+		check_ajax_referer('rwl_admin_nonce', 'nonce');
+
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error(array('message' => 'دسترسی غیرمجاز'));
+		}
+
+		$default_items = array(
+			array(
+				'title' => '۱۰٪ تخفیف',
+				'code' => 'OFF10',
+				'chance' => '20',
+				'color' => '#36a2eb'
+			),
+			array(
+				'title' => 'پوچ',
+				'code' => '',
+				'chance' => '20',
+				'color' => '#ff6384'
+			),
+			array(
+				'title' => '۲۰٪ تخفیف',
+				'code' => 'OFF20',
+				'chance' => '10',
+				'color' => '#ff9f40'
+			),
+			array(
+				'title' => 'ارسال رایگان',
+				'code' => 'FREESHIP',
+				'chance' => '15',
+				'color' => '#4bc0c0'
+			),
+			array(
+				'title' => '۵٪ تخفیف',
+				'code' => 'OFF5',
+				'chance' => '25',
+				'color' => '#9966ff'
+			),
+			array(
+				'title' => 'شانس مجدد',
+				'code' => 'AGAIN',
+				'chance' => '10',
+				'color' => '#ffcd56'
+			)
+		);
+
+		$default_settings = array(
+			'limit_duration' => 24,
+			'global_win_chance' => 70,
+			'test_mode' => 0,
+			'items' => $default_items
+		);
+
+		update_option('rwl_settings', $default_settings);
+
+		wp_send_json_success(array('message' => 'تنظیمات با موفقیت به حالت پیش‌فرض بازگشت.'));
+	}
 
 	public function add_plugin_admin_menu()
 	{

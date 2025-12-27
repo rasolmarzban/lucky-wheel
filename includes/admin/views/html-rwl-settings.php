@@ -57,6 +57,7 @@
         </div>
 
         <?php submit_button(); ?>
+        <button type="button" id="rwl-reset-settings" class="button button-link-delete" style="margin-top: -45px; margin-left: 10px; float: left;">بازنشانی به تنظیمات پیش‌فرض</button>
     </form>
 </div>
 

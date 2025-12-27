@@ -77,4 +77,27 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // Handle Reset Settings
+    $('#rwl-reset-settings').on('click', function() {
+        if (!confirm('آیا مطمئن هستید که می‌خواهید تمام تنظیمات (رنگ‌ها، متن‌ها و شانس‌ها) را به حالت پیش‌فرض بازگردانید؟ این عملیات غیرقابل بازگشت است.')) {
+            return;
+        }
+
+        var $btn = $(this);
+        $btn.prop('disabled', true).text('در حال بازنشانی...');
+
+        $.post(rwl_admin_obj.ajax_url, {
+            action: 'rwl_reset_settings',
+            nonce: rwl_admin_obj.nonce
+        }, function(response) {
+            if (response.success) {
+                alert(response.data.message);
+                location.reload();
+            } else {
+                alert(response.data.message);
+                $btn.prop('disabled', false).text('بازنشانی به تنظیمات پیش‌فرض');
+            }
+        });
+    });
 });
