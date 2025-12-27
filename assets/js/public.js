@@ -166,12 +166,50 @@ jQuery(document).ready(function ($) {
           $("#rwl-otp-section").slideDown();
           $("#rwl-send-otp-btn").hide();
           $("#rwl-mobile-input").prop("disabled", true);
+
+          // Start Timer
+          if (response.data.expiry) {
+            startTimer(response.data.expiry, $("#rwl-timer"));
+          }
         } else {
           showNotification(response.data.message, "error");
         }
       }
     );
   });
+
+  var timerInterval;
+  function startTimer(duration, display) {
+    var timer = duration,
+      minutes,
+      seconds;
+
+    // Clear existing timer if any
+    if (timerInterval) clearInterval(timerInterval);
+
+    // Initial display
+    updateDisplay();
+
+    timerInterval = setInterval(function () {
+      if (--timer < 0) {
+        clearInterval(timerInterval);
+        display.text("زمان اعتبار به پایان رسید.");
+        // Optionally disable verify button or show resend button here
+        return;
+      }
+      updateDisplay();
+    }, 1000);
+
+    function updateDisplay() {
+      minutes = parseInt(timer / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+
+      display.text("زمان باقیمانده: " + minutes + ":" + seconds);
+    }
+  }
 
   // 3. Verify & Spin Logic
   $("#rwl-verify-btn").on("click", function () {
@@ -212,26 +250,49 @@ jQuery(document).ready(function ($) {
   });
 
   function spinWheel(winningIndex, item, response) {
-    // Calculate rotation
-    // We want the winning slice to be at the TOP (Arrow).
-    // Arrow is at 0deg (top).
-    // Center of winning slice is at: (index * sliceAngle) + (sliceAngle / 2)
-    // We need to rotate the WHEEL so that this angle moves to 0 (or 360).
-    // Target Rotation = 360 - (CenterAngle)
-
     var centerAngle = winningIndex * sliceAngle + sliceAngle / 2;
-    var targetRotation = 360 - centerAngle;
+    var targetAngle = 360 - centerAngle; // The angle we want the wheel to end at (modulo 360)
 
-    // Add extra spins (e.g., 3 full spins for slower speed)
-    var totalRotation = targetRotation + 360 * 3;
+    // Get current rotation
+    var $wheel = $("#rwl-wheel-element");
+    var currentRotation = $wheel.data("current-rotation") || 0;
 
-    // Apply CSS
-    $("#rwl-wheel-element").css("transform", "rotate(" + totalRotation + "deg)");
+    // Calculate delta to reach target
+    // We want (currentRotation + delta) % 360 === targetAngle
+    var currentMod = currentRotation % 360;
+    var delta = (targetAngle - currentMod + 360) % 360;
 
-    // Wait for animation
-    setTimeout(function () {
-      showResult(item, response.data.is_win);
-    }, 13000); // 12s (CSS) + 1s delay
+    // Add extra spins
+    var extraSpins = 8; // Increase spins for JS animation smoothness
+    var totalRotationToAdd = delta + extraSpins * 360;
+
+    var finalRotation = currentRotation + totalRotationToAdd;
+
+    // Animation
+    var duration = 6000; // 6 seconds
+    var startTimestamp = null;
+
+    function step(timestamp) {
+      if (!startTimestamp) startTimestamp = timestamp;
+      var progress = timestamp - startTimestamp;
+      var percent = Math.min(progress / duration, 1);
+
+      // Ease Out Quart: 1 - (1 - t)^4
+      var ease = 1 - Math.pow(1 - percent, 4);
+
+      var currentStep = currentRotation + totalRotationToAdd * ease;
+      $wheel.css("transform", "rotate(" + currentStep + "deg)");
+
+      if (progress < duration) {
+        window.requestAnimationFrame(step);
+      } else {
+        // Complete
+        $wheel.data("current-rotation", finalRotation);
+        showResult(item, response.data.is_win);
+      }
+    }
+
+    window.requestAnimationFrame(step);
   }
 
   function showResult(item, is_win) {

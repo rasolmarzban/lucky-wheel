@@ -119,7 +119,10 @@ class RWL_Public
         $sent = $this->send_sms_melipayamak($mobile, $otp);
 
         if ($sent) {
-            wp_send_json_success(array('message' => 'کد تایید ارسال شد.'));
+            wp_send_json_success(array(
+                'message' => 'کد تایید ارسال شد.',
+                'expiry' => $otp_expiry * 60 // Send expiry in seconds
+            ));
         } else {
             // For development/demo purposes if SMS fails or no API key, we might want to log it.
             // wp_send_json_error( array( 'message' => 'خطا در ارسال پیامک. (Dev: Code is ' . $otp . ')' ) );
@@ -195,6 +198,11 @@ class RWL_Public
         $options = get_option('rwl_settings');
         $global_chance = isset($options['global_win_chance']) ? intval($options['global_win_chance']) : 70;
         $items = isset($options['items']) ? $options['items'] : array();
+
+        // Ensure items is a sequential array to match frontend indices
+        if (is_array($items)) {
+            $items = array_values($items);
+        }
 
         if (empty($items)) {
             return array('index' => -1, 'item' => array('title' => 'خطا', 'code' => ''));

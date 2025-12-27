@@ -52,8 +52,7 @@
     border: 5px solid #333;
     position: relative;
     overflow: hidden;
-    transition: transform 6s cubic-bezier(0.1, 0, 0.05, 1);
-}   animation-duration: 10ms;
+}   
 }
 
 .rwl-arrow {
