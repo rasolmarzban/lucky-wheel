@@ -69,6 +69,8 @@ class RWL_Main {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings' );
         $this->loader->add_action( 'wp_ajax_rwl_test_sms', $plugin_admin, 'ajax_test_sms' );
+        $this->loader->add_action( 'wp_ajax_rwl_delete_log', $plugin_admin, 'ajax_delete_log' );
+        $this->loader->add_action( 'admin_post_rwl_export_csv', $plugin_admin, 'action_export_csv' );
 	}
 
 	/**

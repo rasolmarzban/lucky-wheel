@@ -1,5 +1,6 @@
 <div class="wrap">
-    <h1>گزارشات گردونه شانس</h1>
+    <h1 class="wp-heading-inline">گزارشات گردونه شانس</h1>
+    <a href="<?php echo admin_url('admin-post.php?action=rwl_export_csv'); ?>" class="page-title-action">خروجی CSV</a>
     
     <?php
     global $wpdb;
@@ -44,25 +45,56 @@
                 <th>کد تخفیف</th>
                 <th>آی‌پی کاربر</th>
                 <th>تاریخ و ساعت</th>
+                <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
             <?php
             if ( $results ) {
                 foreach ( $results as $row ) {
-                    echo '<tr>';
+                    echo '<tr id="rwl-log-row-' . $row->id . '">';
                     echo '<td>' . esc_html( $row->id ) . '</td>';
                     echo '<td>' . esc_html( $row->mobile ) . '</td>';
                     echo '<td>' . esc_html( $row->won_item ) . '</td>';
                     echo '<td><code>' . esc_html( $row->won_code ) . '</code></td>';
                     echo '<td>' . esc_html( $row->user_ip ) . '</td>';
                     echo '<td>' . esc_html( $row->created_at ) . '</td>';
+                    echo '<td><button type="button" class="button rwl-delete-log" data-id="' . $row->id . '">حذف</button></td>';
                     echo '</tr>';
                 }
             } else {
-                echo '<tr><td colspan="6">هیچ رکوردی یافت نشد.</td></tr>';
+                echo '<tr><td colspan="7">هیچ رکوردی یافت نشد.</td></tr>';
             }
             ?>
         </tbody>
     </table>
+    
+    <script>
+    jQuery(document).ready(function($) {
+        $('.rwl-delete-log').on('click', function() {
+            if (!confirm('آیا از حذف این رکورد مطمئن هستید؟')) {
+                return;
+            }
+            
+            var $btn = $(this);
+            var id = $btn.data('id');
+            $btn.prop('disabled', true).text('...');
+            
+            $.post(rwl_admin_obj.ajax_url, {
+                action: 'rwl_delete_log',
+                nonce: rwl_admin_obj.nonce,
+                id: id
+            }, function(response) {
+                if (response.success) {
+                    $('#rwl-log-row-' + id).fadeOut(function() {
+                        $(this).remove();
+                    });
+                } else {
+                    alert(response.data.message);
+                    $btn.prop('disabled', false).text('حذف');
+                }
+            });
+        });
+    });
+    </script>
 </div>

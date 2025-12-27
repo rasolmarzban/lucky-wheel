@@ -88,6 +88,73 @@ class RWL_Admin
 		}
 	}
 
+    public function ajax_delete_log()
+    {
+        check_ajax_referer('rwl_admin_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => 'دسترسی غیرمجاز'));
+        }
+
+        $log_id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        if ($log_id <= 0) {
+            wp_send_json_error(array('message' => 'شناسه نامعتبر'));
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'rwl_logs';
+        
+        $deleted = $wpdb->delete($table_name, array('id' => $log_id));
+
+        if ($deleted) {
+            wp_send_json_success(array('message' => 'رکورد حذف شد.'));
+        } else {
+            wp_send_json_error(array('message' => 'خطا در حذف رکورد.'));
+        }
+    }
+
+    public function action_export_csv()
+    {
+        if (!current_user_can('manage_options')) {
+            wp_die('دسترسی غیرمجاز');
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'rwl_logs';
+        $results = $wpdb->get_results("SELECT * FROM $table_name ORDER BY created_at DESC", ARRAY_A);
+
+        if (empty($results)) {
+            wp_die('داده‌ای برای خروجی وجود ندارد.');
+        }
+
+        $filename = 'rwl-reports-' . date('Y-m-d') . '.csv';
+        
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        $output = fopen('php://output', 'w');
+
+        // UTF-8 BOM for Excel
+        fputs($output, "\xEF\xBB\xBF");
+
+        // Headers
+        fputcsv($output, array('ID', 'شماره موبایل', 'آیتم برنده شده', 'کد تخفیف', 'آی‌پی کاربر', 'تاریخ و ساعت'));
+
+        foreach ($results as $row) {
+            fputcsv($output, array(
+                $row['id'],
+                $row['mobile'],
+                $row['won_item'],
+                $row['won_code'],
+                $row['user_ip'],
+                $row['created_at']
+            ));
+        }
+
+        fclose($output);
+        exit;
+    }
+
 	public function add_plugin_admin_menu()
 	{
 		add_menu_page(
