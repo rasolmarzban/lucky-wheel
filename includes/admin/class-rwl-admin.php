@@ -167,38 +167,38 @@ class RWL_Admin
 			array(
 				'title' => '۱۰٪ تخفیف',
 				'code' => 'OFF10',
-				'chance' => '20',
-				'color' => '#36a2eb'
+				'chance' => '15',
+				'color' => '#ef5350' // Red
+			),
+			array(
+				'title' => 'دانلود رایگان',
+				'code' => 'BOOK',
+				'chance' => '15',
+				'color' => '#263238' // Dark Blue
+			),
+			array(
+				'title' => '۵٪ تخفیف',
+				'code' => 'OFF5',
+				'chance' => '15',
+				'color' => '#ef5350' // Red
 			),
 			array(
 				'title' => 'پوچ',
 				'code' => '',
 				'chance' => '20',
-				'color' => '#ff6384'
+				'color' => '#263238' // Dark Blue
 			),
 			array(
-				'title' => '۲۰٪ تخفیف',
-				'code' => 'OFF20',
-				'chance' => '10',
-				'color' => '#ff9f40'
+				'title' => 'ایشالا دفعه دیگه',
+				'code' => '',
+				'chance' => '20',
+				'color' => '#4db6ac' // Teal
 			),
 			array(
-				'title' => 'ارسال رایگان',
-				'code' => 'FREESHIP',
+				'title' => 'شانس نداری',
+				'code' => '',
 				'chance' => '15',
-				'color' => '#4bc0c0'
-			),
-			array(
-				'title' => '۵٪ تخفیف',
-				'code' => 'OFF5',
-				'chance' => '25',
-				'color' => '#9966ff'
-			),
-			array(
-				'title' => 'شانس مجدد',
-				'code' => 'AGAIN',
-				'chance' => '10',
-				'color' => '#ffcd56'
+				'color' => '#e1f5fe' // Light Blue
 			)
 		);
 

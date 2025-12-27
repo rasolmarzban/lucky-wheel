@@ -121,7 +121,7 @@ jQuery(document).ready(function ($) {
       .off("click")
       .on("click", function () {
         var $btn = $(this);
-        $btn.prop("disabled", true).text("در حال چرخش...");
+        $btn.prop("disabled", true).html('<span class="rwl-spinner"></span>');
 
         $.post(
           rwl_obj.ajax_url,
@@ -289,6 +289,12 @@ jQuery(document).ready(function ($) {
         // Complete
         $wheel.data("current-rotation", finalRotation);
         showResult(item, response.data.is_win);
+
+        // Update spin button to cooldown state
+        var $btn = $("#rwl-spin-btn");
+        $btn.html(""); // Remove spinner if present
+        $btn.addClass("rwl-cooldown");
+        $btn.prop("disabled", true);
       }
     }
 
