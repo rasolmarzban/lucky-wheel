@@ -17,7 +17,7 @@
     text-align: center !important;
     font-family: var(--rwl-font-family) !important;
     direction: rtl !important;
-    background: var(--rwl-glass-bg) !important;
+    background: linear-gradient(35deg, #3d0000 0%, #d60606 100%) !important;
     padding: 30px !important;
     border-radius: var(--rwl-border-radius) !important;
     box-shadow: var(--rwl-glass-shadow) !important;
@@ -41,13 +41,14 @@
     margin-top: 0 !important;
     margin-bottom: 15px !important;
     font-size: 1.5rem !important;
-    color: #444 !important;
+    color: #fff !important;
     text-align: center !important;
 }
 
 .rwl-step-container p {
+    margin-top: 20px;
     margin-bottom: 20px !important;
-    color: #666 !important;
+    color: #fff !important;
     text-align: center !important;
 }
 
@@ -82,7 +83,7 @@
 
 .rwl-btn {
     padding: 12px 25px !important;
-    background: linear-gradient(135deg, var(--rwl-primary-color) 0%, var(--rwl-secondary-color) 100%) !important;
+    background: linear-gradient(135deg, #a79f9f 0%, #000000 100%) !important;
     color: #fff !important;
     border: none !important;
     border-radius: 50px !important; /* Fully rounded buttons */
@@ -434,7 +435,7 @@
     color: #fff !important;
     padding: 15px 25px !important;
     border-radius: 50px !important;
-    display: flex !important;
+    display: flex;
     justify-content: center !important;
     align-items: center !important;
     z-index: 9998 !important;

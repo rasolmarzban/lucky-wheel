@@ -141,6 +141,26 @@ jQuery(document).ready(function ($) {
       });
   }
 
+  // Helper: Convert Persian/Arabic digits to English
+  function toEnglishDigits(str) {
+    if (!str) return str;
+    var persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+    var arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+    for (var i = 0; i < 10; i++) {
+      str = str.replace(persianNumbers[i], i).replace(arabicNumbers[i], i);
+    }
+    return str;
+  }
+
+  // Auto-convert numerals in inputs
+  $("#rwl-mobile-input, #rwl-otp-input").on("input change", function () {
+    var val = $(this).val();
+    var newVal = toEnglishDigits(val);
+    if (val !== newVal) {
+      $(this).val(newVal);
+    }
+  });
+
   // 2. OTP Logic
   $("#rwl-send-otp-btn").on("click", function () {
     var mobile = $("#rwl-mobile-input").val();
@@ -234,13 +254,23 @@ jQuery(document).ready(function ($) {
       },
       function (response) {
         if (response.success) {
-          showNotification("کد تایید شد! در حال آماده‌سازی گردونه...", "success");
+          showNotification("کد تایید شد! برای شروع بازی روی دکمه چرخش کلیک کنید.", "success");
           // Switch to wheel view
           $("#rwl-step-login").hide();
           $("#rwl-step-wheel").fadeIn();
 
-          // Start Spin
-          spinWheel(response.data.result_index, response.data.item, response);
+          // Prepare manual spin
+          var $spinBtn = $("#rwl-spin-btn");
+          // Reset button state just in case
+
+          // Bind click event for manual spin
+          $spinBtn.off("click").on("click", function () {
+            var $btn = $(this);
+            $btn.prop("disabled", true).html('<span class="rwl-spinner"></span>');
+
+            // Use the response data we got from verification
+            spinWheel(response.data.result_index, response.data.item, response);
+          });
         } else {
           $btn.prop("disabled", false).text("تایید و شروع");
           showNotification(response.data.message, "error");
@@ -310,13 +340,15 @@ jQuery(document).ready(function ($) {
       $("#rwl-won-code").text(item.code);
       $("#rwl-code-container").show();
 
-      // Save to LocalStorage for floating bar
-      var data = {
-        code: item.code,
-        expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // 24 hours
-      };
-      localStorage.setItem("rwl_won_data", JSON.stringify(data));
-      checkFloatingBar();
+      // Save to LocalStorage for floating bar if code exists
+      if (item.code) {
+        var data = {
+          code: item.code,
+          expiry: new Date().getTime() + 24 * 60 * 60 * 1000, // 24 hours
+        };
+        localStorage.setItem("rwl_won_data", JSON.stringify(data));
+        checkFloatingBar();
+      }
     } else {
       $("#rwl-popup-title").text("متاسفیم!");
       $("#rwl-popup-desc").text("شانس خود را دوباره امتحان کنید:");
@@ -353,6 +385,13 @@ jQuery(document).ready(function ($) {
     if (!data) return;
 
     data = JSON.parse(data);
+
+    // Validate code presence
+    if (!data.code) {
+      localStorage.removeItem("rwl_won_data");
+      return;
+    }
+
     var now = new Date().getTime();
 
     if (now < data.expiry) {
@@ -361,7 +400,7 @@ jQuery(document).ready(function ($) {
 
       if ($("#rwl-floating-bar").length === 0) {
         $("body").append(`
-                    <div id="rwl-floating-bar" class="rwl-floating-bar">
+                    <div id="rwl-floating-bar" class="rwl-floating-bar" style="display:none;">
                         <div class="rwl-bar-content">
                             <span>کد تخفیف شما: <strong id="rwl-bar-code"></strong></span>
                             <span id="rwl-bar-timer"></span>
